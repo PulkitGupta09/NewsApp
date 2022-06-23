@@ -1,10 +1,24 @@
 import React, { Component } from "react";
 import Newsitem from "./Newsitem";
 import Loading from "./loading.js"
+import PropTypes from 'prop-types'
 
 export class News extends Component {
-  constructor() {
-    super();
+  static defaultProps = {
+    pageSize: '8',
+    country: 'in',
+    category: 'general'
+  }
+  static propTypes = {
+    pageSize: PropTypes.number,
+    country: PropTypes.string,  
+    category: PropTypes.string
+  }
+
+
+
+  constructor(props) {
+    super(props);
     console.log("Hello i am constructor from news components");
     this.state = {
       articles: [],
@@ -12,11 +26,17 @@ export class News extends Component {
       totalResults: 0,
       page: 1 
     };
+    document.title = `${this.capitalizeFirstLetter(this.props.category)} - NewsMonkey`;
   }
+
+  capitalizeFirstLetter=(string)=> {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+  
 
   async componentDidMount(){
     console.log("cdm");
-    let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=3cc42736a39a4a7b866f366218920479&page=1&pageSize=${this.props.pageSize}`;
+    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=3cc42736a39a4a7b866f366218920479&page=1&pageSize=${this.props.pageSize}`;
     this.setState({loading: true});
     let data = await fetch(url);
     let parseData = await data.json();  
@@ -29,7 +49,7 @@ export class News extends Component {
 
   handlePrevClick = async ()=>{
     console.log("clicked on prev click");
-    let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=3cc42736a39a4a7b866f366218920479&page=${this.state.page - 1}&pageSize=${this.props.pageSize}`;
+    let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=3cc42736a39a4a7b866f366218920479&page=${this.state.page - 1}&pageSize=${this.props.pageSize}`;
     this.setState({loading: true});
     let data = await fetch(url);
     let parseData = await data.json();  
@@ -47,7 +67,7 @@ export class News extends Component {
     }
     else{  
       console.log("clicked on next click"); 
-      let url = `https://newsapi.org/v2/top-headlines?country=in&apiKey=3cc42736a39a4a7b866f366218920479&page=${this.state.page + 1}&pageSize=${this.props.pageSize}`;
+      let url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=3cc42736a39a4a7b866f366218920479&page=${this.state.page + 1}&pageSize=${this.props.pageSize}`;
       this.setState({loading: true});
       let data = await fetch(url);
       let parseData = await data.json();  
@@ -61,10 +81,9 @@ export class News extends Component {
   }
   render() {
     return (
-      <>
       <div className="container">
         <div className="Container my-3 mx-4">
-          <h1 className="mb-5 mt-5 text-center">NewsMonkey - Top Headlines</h1>
+          <h1 className="mb-5 mt-5 text-center">NewsMonkey - Top {this.capitalizeFirstLetter(this.props.category)} Headlines</h1>
           {this.state.loading && <Loading />}
           <div className="row">
             {!this.state.loading && this.state.articles.map((element)=>{
@@ -74,10 +93,12 @@ export class News extends Component {
               description={element.description?element.description:""}
               imageUrl={element.urlToImage}
               newsUrl={element.url}
+              author = {element.author}
+              time = {element.publishedAt}
+              source = {element.source.name}
             />
           </div>
             })}
-
           </div>
         </div>
         <hr />
@@ -87,7 +108,6 @@ export class News extends Component {
         </div>
         <hr />
       </div>
-      </>
       
     );
   }

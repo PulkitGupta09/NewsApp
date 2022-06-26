@@ -13,14 +13,14 @@ const News = (props) => {
   const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
-  document.title = `${capitalizeFirstLetter(props.category)} - NewsMonkey`;
+
 
   const updateNews = async () => {
     props.setProgress(10);
     const url = `https://newsapi.org/v2/top-headlines?country=${
       props.country
     }&category=${props.category}&apiKey=${props.apiKey}&page=${
-      page + 1
+      page
     }&pageSize=${props.pageSize}`;
     setLoading(true);
     let data = await fetch(url);
@@ -35,8 +35,8 @@ const News = (props) => {
   };
 
   const fetchMoreData = async () => {
+    const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page+1}&pageSize=${props.pageSize}`;
     setPage(page + 1);
-    const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
     let data = await fetch(url);
     let parseData = await data.json();
     setArticles(articles.concat(parseData.articles));
@@ -44,22 +44,13 @@ const News = (props) => {
   };
   useEffect(() => {
     updateNews();
+    document.title = `${capitalizeFirstLetter(props.category)} - NewsMonkey`;
+    // eslint-disable-next-line
   }, []);
-
-  // const handlePrevClick = async () => {
-  //   setPage(page - 1);
-  //   updateNews();
-  // };
-
-  // const handleNextClick = async () => {
-  //   setPage(page + 1);
-  //   updateNews();
-  // };
-
 
 return (
   <>
-    <h1 className="mb-5 mt-5 text-center">
+    <h1 className="text-center" style = {{marginTop: "90px",marginBottom: "30px"}}>
       NewsMonkey - Top {capitalizeFirstLetter(props.category)} Headlines
     </h1>
     {loading && <Loading />}

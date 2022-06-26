@@ -6,9 +6,6 @@ export class Newsitem extends Component {
     return (
 <div className='my-3'>
   <div className="card">
-    {/* <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style = {{zIndex: "1",padding: "7px",left: "90%"}}>
-    {source}
-    </span> */}
     <span className = "badge bg-danger" style= {{position: "absolute", top: "0px", right: "0px", padding: "10px"}}>{source}</span>
     <img src={imageUrl?imageUrl:"https://ommcom.s3.ap-south-1.amazonaws.com/wp-content/uploads/2022/06/21140252/dzzXNZ7G8vDT24RS9EBJKN-e1655800399230.jpg"} className="card-img-top" alt="..."/>
     
